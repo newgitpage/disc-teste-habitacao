@@ -390,7 +390,7 @@
             document.getElementById('btn-proximo').disabled = !respostasUsuario[currentIdx];
             document.getElementById('btn-proximo').classList.toggle('opacity-50', !respostasUsuario[currentIdx]);
             document.getElementById('btn-proximo').classList.toggle('cursor-not-allowed', !respostasUsuario[currentIdx]);
-            document.getElementById('btn-proximo').innerText = currentIdx === 39 ? 'FINALIZAR' : 'AVANÇAR';
+            document.getElementById('btn-proximo').innerText = currentIdx === 31 ? 'FINALIZAR' : 'AVANÇAR';
         }
 
         function selectOption(letter) {
@@ -399,7 +399,7 @@
         }
 
         function nextQuestion() {
-            if (currentIdx < 39) {
+            if (currentIdx < 31) {
                 currentIdx++;
                 renderQuestion();
             } else {
@@ -653,4 +653,5 @@
     </script>
 </body>
 </html>
+
 
