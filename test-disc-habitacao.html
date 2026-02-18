@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TESTE DISC - Secretaria de Habitação</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --pantone-black: #2D2926;
+            --pantone-red: #DA291C;
+            --pantone-blue: #0033A0;
+            --pantone-yellow: #FED141;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: var(--pantone-black); }
+        .bg-pantone-blue { background-color: var(--pantone-blue); }
+        .text-pantone-blue { color: var(--pantone-blue); }
+        .btn-hover:hover { transform: translateY(-2px); transition: all 0.3s ease; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+        section { display: none; }
+        section.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .star-rating { cursor: pointer; font-size: 1.5rem; color: #cbd5e1; }
+        .star-rating.active { color: var(--pantone-yellow); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-pantone-blue text-white shadow-lg p-4 md:p-6 sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <img src="brasao-mogi.png" alt="Brasão Mogi" class="h-16 md:h-20 object-contain bg-white p-1 rounded">
+            <div class="text-center">
+                <h1 class="text-3xl md:text-4xl font-black tracking-tighter">TESTE DISC</h1>
+                <p class="text-sm md:text-base font-light uppercase tracking-widest opacity-90">Secretaria Municipal de Habitação e Regularização Fundiária</p>
+            </div>
+            <img src="DISC-eixos.png" alt="DISC Eixos" class="h-16 md:h-20 object-contain bg-white p-1 rounded">
+        </div>
+    </header>
+
+    <!-- Nav Menu -->
+    <nav class="bg-slate-900 text-white sticky top-[136px] md:top-[128px] z-40 shadow-md">
+        <div class="container mx-auto flex flex-wrap justify-center gap-1 p-2">
+            <button onclick="showSection('home')" class="px-4 py-2 hover:bg-pantone-blue rounded transition uppercase text-xs font-bold">Início</button>
+            <button onclick="showSection('explicacao')" class="px-4 py-2 hover:bg-pantone-blue rounded transition uppercase text-xs font-bold">O que é DISC?</button>
+            <button onclick="showSection('famosos')" class="px-4 py-2 hover:bg-pantone-blue rounded transition uppercase text-xs font-bold">Famosos</button>
+            <button onclick="startTest()" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded transition uppercase text-xs font-bold">Fazer Teste</button>
+            <button onclick="showSection('dashboard')" class="px-4 py-2 hover:bg-pantone-blue rounded transition uppercase text-xs font-bold">Meu Histórico</button>
+        </div>
+    </nav>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+
+        <!-- SECTION: HOME -->
+        <section id="home" class="active">
+            <div class="max-w-4xl mx-auto text-center mb-12">
+                <h2 class="text-4xl font-bold mb-6 text-slate-800">Descubra seu Perfil Comportamental</h2>
+                <p class="text-lg text-slate-600">Otimize sua comunicação, melhore seu desempenho profissional e entenda melhor seus colegas de equipe.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div onclick="showSection('explicacao')" class="cursor-pointer bg-blue-100 p-8 rounded-2xl shadow-sm border border-blue-200 hover:shadow-xl transition-all duration-300 btn-hover text-center">
+                    <i class="fas fa-book-open text-blue-600 text-4xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Explicação</h3>
+                    <p class="text-sm text-blue-800">Entenda a metodologia e como funciona o teste.</p>
+                </div>
+                <div onclick="showSection('famosos')" class="cursor-pointer bg-fuchsia-100 p-8 rounded-2xl shadow-sm border border-fuchsia-200 hover:shadow-xl transition-all duration-300 btn-hover text-center">
+                    <i class="fas fa-users text-fuchsia-600 text-4xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Famosos</h3>
+                    <p class="text-sm text-fuchsia-800">Veja perfis de figuras públicas conhecidas.</p>
+                </div>
+                <div onclick="startTest()" class="cursor-pointer bg-orange-100 p-8 rounded-2xl shadow-sm border border-orange-200 hover:shadow-xl transition-all duration-300 btn-hover text-center">
+                    <i class="fas fa-clipboard-check text-orange-600 text-4xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Fazer Teste</h3>
+                    <p class="text-sm text-orange-800">Responda 32 questões e descubra seu perfil.</p>
+                </div>
+                <div onclick="showSection('dashboard')" class="cursor-pointer bg-emerald-100 p-8 rounded-2xl shadow-sm border border-emerald-200 hover:shadow-xl transition-all duration-300 btn-hover text-center">
+                    <i class="fas fa-chart-line text-emerald-600 text-4xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Histórico</h3>
+                    <p class="text-sm text-emerald-800">Acompanhe seus resultados anteriores.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: EXPLICAÇÃO -->
+        <section id="explicacao">
+            <div class="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow-lg border border-slate-200">
+                <h2 class="text-3xl font-bold mb-6 text-pantone-blue">O que é a Metodologia DISC?</h2>
+                <div class="prose prose-slate max-w-none text-slate-700 leading-relaxed">
+                    <p class="mb-4 font-semibold italic text-lg text-slate-500">A metodologia DISC é uma das ferramentas de avaliação comportamental mais respeitadas do mundo.</p>
+                    <p class="mb-6">Desenvolvida com base nos estudos do Dr. William Moulton Marston, a ferramenta divide o comportamento humano em quatro quadrantes principais:</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                        <div class="p-4 border-l-4 border-red-500 bg-red-50">
+                            <strong class="text-red-600 text-lg">D - Dominância:</strong> Foco em resultados, rapidez, competitividade e desafios.
+                        </div>
+                        <div class="p-4 border-l-4 border-yellow-400 bg-yellow-50">
+                            <strong class="text-yellow-600 text-lg">I - Influência:</strong> Foco em pessoas, otimismo, entusiasmo e comunicação.
+                        </div>
+                        <div class="p-4 border-l-4 border-green-500 bg-green-50">
+                            <strong class="text-green-600 text-lg">S - Estabilidade:</strong> Foco em paciência, persistência, lealdade e rotina.
+                        </div>
+                        <div class="p-4 border-l-4 border-blue-500 bg-blue-50">
+                            <strong class="text-blue-600 text-lg">C - Conformidade:</strong> Foco em regras, precisão, análise e detalhes.
+                        </div>
+                    </div>
+
+                    <h3 class="text-2xl font-bold mb-4">Como responder o teste?</h3>
+                    <ul class="list-disc pl-5 mb-6 space-y-2">
+                        <li><strong>Seja Honesto:</strong> Não existe perfil certo ou errado, todos têm pontos fortes.</li>
+                        <li><strong>Seja Rápido:</strong> Use sua primeira intuição. A resposta espontânea é a mais precisa.</li>
+                        <li><strong>Contexto Profissional:</strong> Pense em como você age no ambiente de trabalho.</li>
+                        <li><strong>Exemplo:</strong> Se você deve escolher entre "Decidido" e "Cuidadoso", escolha aquele que MAIS se parece com você no dia a dia.</li>
+                    </ul>
+                </div>
+                <button onclick="startTest()" class="mt-8 w-full md:w-auto bg-pantone-blue text-white px-8 py-3 rounded-lg font-bold btn-hover uppercase">Entendi, vamos começar!</button>
+            </div>
+        </section>
+
+        <!-- SECTION: FAMOSOS -->
+        <section id="famosos">
+            <h2 class="text-3xl font-bold text-center mb-8">Perfis de Famosos</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Dominante -->
+                <div class="bg-white rounded-xl shadow overflow-hidden border-t-8 border-red-500">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-red-600 mb-1">Steve Jobs</h3>
+                        <span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded">DOMINANTE (D)</span>
+                        <p class="mt-4 text-sm text-gray-600 italic">"Focado em resultados agressivos, inovador nato e direto ao ponto. Não tinha medo de conflitos para alcançar a excelência."</p>
+                    </div>
+                </div>
+                <!-- Influente -->
+                <div class="bg-white rounded-xl shadow overflow-hidden border-t-8 border-yellow-400">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-yellow-500 mb-1">Oprah Winfrey</h3>
+                        <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded">INFLUENTE (I)</span>
+                        <p class="mt-4 text-sm text-gray-600 italic">"Comunicação magnética, inspiradora e voltada para a conexão emocional com o público."</p>
+                    </div>
+                </div>
+                <!-- Estabilidade -->
+                <div class="bg-white rounded-xl shadow overflow-hidden border-t-8 border-green-500">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-green-600 mb-1">Princess Diana</h3>
+                        <span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded">ESTABILIDADE (S)</span>
+                        <p class="mt-4 text-sm text-gray-600 italic">"Conhecida pela empatia, calma, suporte aos outros e busca por harmonia e estabilidade."</p>
+                    </div>
+                </div>
+                <!-- Conformidade -->
+                <div class="bg-white rounded-xl shadow overflow-hidden border-t-8 border-blue-500">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-blue-600 mb-1">Bill Gates</h3>
+                        <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded">CONFORMIDADE (C)</span>
+                        <p class="mt-4 text-sm text-gray-600 italic">"Analítico, perfeccionista, focado em lógica, sistemas e precisão extrema nos detalhes."</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: O TESTE (CORE) -->
+        <section id="teste">
+            <div class="max-w-2xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-slate-200">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold text-slate-800">Questão <span id="current-q-num">1</span> de 32</h2>
+                    <div class="w-1/2 bg-slate-200 rounded-full h-2">
+                        <div id="progress-bar" class="bg-pantone-blue h-2 rounded-full transition-all duration-300" style="width: 2.5%"></div>
+                    </div>
+                </div>
+                
+                <p class="text-lg text-slate-700 mb-8 font-medium">Qual destas características você mais se identifica no trabalho?</p>
+                
+                <div id="options-container" class="space-y-4">
+                    <!-- Dinâmico via JS -->
+                </div>
+
+                <div class="mt-10 flex justify-between">
+                    <button id="btn-voltar" onclick="prevQuestion()" class="hidden text-slate-500 font-bold px-6 py-2 rounded-lg hover:bg-slate-100 transition">VOLTAR</button>
+                    <button id="btn-proximo" disabled onclick="nextQuestion()" class="ml-auto bg-pantone-blue text-white px-10 py-3 rounded-lg font-bold opacity-50 cursor-not-allowed transition">AVANÇAR</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: RESULTADO -->
+        <section id="resultado">
+            <div class="max-w-5xl mx-auto space-y-8">
+                <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200 text-center">
+                    <h2 class="text-3xl font-bold mb-2">Seu Perfil Dominante é:</h2>
+                    <h3 id="res-perfil-nome" class="text-5xl font-black mb-6 uppercase tracking-tight">Dominante</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div class="h-64">
+                            <canvas id="resultChart"></canvas>
+                        </div>
+                        <div class="text-left space-y-4">
+                            <h4 class="text-xl font-bold border-b pb-2">Distribuição Comportamental</h4>
+                            <div id="res-porcentagens-lista" class="space-y-2">
+                                <!-- Dinâmico via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <h4 class="text-xl font-bold mb-4 text-pantone-blue flex items-center">
+                            <i class="fas fa-lightbulb mr-2 text-yellow-500"></i> Dicas para seu Perfil
+                        </h4>
+                        <div id="dicas-dominante" class="text-sm text-slate-600 space-y-3">
+                            <!-- Dinâmico -->
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <h4 class="text-xl font-bold mb-4 text-pantone-blue flex items-center">
+                            <i class="fas fa-arrow-up mr-2 text-green-500"></i> Oportunidades de Desenvolvimento
+                        </h4>
+                        <div id="dicas-desenvolvimento" class="text-sm text-slate-600 space-y-3">
+                            <!-- Dinâmico -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-4 justify-center">
+                    <button onclick="downloadPDF()" class="bg-red-600 text-white px-8 py-3 rounded-lg font-bold btn-hover flex items-center justify-center">
+                        <i class="fas fa-file-pdf mr-2"></i> BAIXAR PDF
+                    </button>
+                    <button onclick="concluirTeste()" class="bg-pantone-blue text-white px-8 py-3 rounded-lg font-bold btn-hover flex items-center justify-center">
+                        <i class="fas fa-check-circle mr-2"></i> CONCLUIR E SALVAR
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: DASHBOARD -->
+        <section id="dashboard">
+            <h2 class="text-3xl font-bold text-center mb-8">Meu Histórico de Evolução</h2>
+            <div id="dashboard-content" class="max-w-4xl mx-auto space-y-6">
+                <!-- Se vazio -->
+                <div id="dash-empty" class="text-center p-12 bg-white rounded-2xl border-2 border-dashed border-slate-300">
+                    <i class="fas fa-folder-open text-slate-300 text-6xl mb-4"></i>
+                    <p class="text-slate-500">Nenhum teste salvo ainda. Faça seu primeiro teste!</p>
+                </div>
+                <!-- Gráfico de histórico -->
+                <div id="dash-charts" class="hidden bg-white p-6 rounded-2xl shadow-md border border-slate-200">
+                     <canvas id="historyChart" style="height: 300px;"></canvas>
+                </div>
+                <!-- Tabela de testes -->
+                <div id="dash-table" class="hidden overflow-x-auto rounded-xl shadow-sm border border-slate-200">
+                    <table class="w-full text-left bg-white">
+                        <thead class="bg-slate-50 text-slate-500 uppercase text-xs font-bold">
+                            <tr>
+                                <th class="p-4">Data</th>
+                                <th class="p-4">Perfil Dominante</th>
+                                <th class="p-4">Pontuação (D-I-S-C)</th>
+                                <th class="p-4">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-list">
+                            <!-- Dinâmico -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-pantone-blue text-white py-12 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 border-b border-blue-800 pb-12 mb-8">
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Secretaria de Habitação e Regularização Fundiária</h4>
+                    <p class="text-blue-200 text-sm mb-4 italic">"Gestão de Pessoas e Melhoria de Processos"</p>
+                    <p class="text-xs opacity-60 mt-8">Desenvolvido para uso interno e capacitativo dos servidores municipais.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-blue-700">
+                    <h5 class="font-bold mb-4">Avalie esta ferramenta:</h5>
+                    <div class="flex gap-2 mb-4">
+                        <i class="fas fa-star star-rating" data-v="1"></i>
+                        <i class="fas fa-star star-rating" data-v="2"></i>
+                        <i class="fas fa-star star-rating" data-v="3"></i>
+                        <i class="fas fa-star star-rating" data-v="4"></i>
+                        <i class="fas fa-star star-rating" data-v="5"></i>
+                    </div>
+                    <textarea placeholder="Deixe seu feedback..." class="w-full bg-slate-900 border border-blue-800 rounded p-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"></textarea>
+                    <button class="mt-4 bg-blue-600 px-6 py-2 rounded text-xs font-bold hover:bg-blue-500 transition">ENVIAR FEEDBACK</button>
+                </div>
+            </div>
+            <div class="text-center text-xs opacity-50">
+                &copy; 2024 Prefeitura de Mogi das Cruzes. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // -------------------------
+        // BANCO DE DADOS QUESTÕES
+        // -------------------------
+        const perguntas = [
+        { o: ["Gosto de assumir a liderança quando necessário.", "Sinto-me à vontade conversando com diferentes pessoas.", "Sou paciente ao lidar com demandas repetitivas.", "Presto atenção aos detalhes antes de concluir algo."], p: ["D", "I", "S", "C"] },
+        { o: ["Tomo decisões rapidamente.", "Entusiasmo as pessoas com minhas ideias.", "Prefiro manter estabilidade no ambiente de trabalho.", "Sigo normas e regulamentos com rigor."], p: ["D", "I", "S", "C"] },
+        { o: ["Gosto de resolver problemas complexos.", "Sou comunicativo e persuasivo.", "Sou cooperativo e prestativo.", "Analiso cuidadosamente antes de agir."], p: ["D", "I", "S", "C"] },
+        { o: ["Sou direto ao ponto.", "Gosto de trabalhar em equipe com interação constante.", "Mantenho a calma sob pressão.", "Valorizo processos bem definidos."], p: ["D", "I", "S", "C"] },
+        { o: ["Busco alcançar metas desafiadoras.", "Gosto de reconhecimento público.", "Prefiro ritmo constante de trabalho.", "Confiro informações antes de finalizar relatórios."], p: ["D", "I", "S", "C"] },
+        { o: ["Enfrento conflitos quando necessário.", "Gosto de motivar colegas.", "Sou leal e confiável.", "Sou organizado e metódico."], p: ["D", "I", "S", "C"] },
+        { o: ["Assumo responsabilidades importantes.", "Sou sociável mesmo em ambientes formais.", "Apoio colegas com paciência.", "Busco precisão nas tarefas."], p: ["D", "I", "S", "C"] },
+        { o: ["Gosto de autonomia para decidir.", "Tenho facilidade em criar conexões.", "Evito mudanças bruscas.", "Sigo padrões técnicos com atenção."], p: ["D", "I", "S", "C"] },
+        { o: ["Gosto de competir e superar desafios.", "Sou otimista e expressivo.", "Sou consistente nas minhas entregas.", "Gosto de analisar dados."], p: ["D", "I", "S", "C"] },
+        { o: ["Tomo iniciativa rapidamente.", "Falo com entusiasmo sobre projetos.", "Sou paciente em processos demorados.", "Gosto de regras claras."], p: ["D", "I", "S", "C"] },
+        { o: ["Gosto de resolver situações urgentes.", "Influencio pessoas com facilidade.", "Trabalho bem em atividades de rotina.", "Sou criterioso com documentos oficiais."], p: ["D", "I", "S", "C"] },
+        { o: ["Busco resultados concretos.", "Gosto de interagir com o público.", "Sou equilibrado emocionalmente.", "Organizo informações com lógica."], p: ["D", "I", "S", "C"] },
+        { o: ["Sou firme em minhas decisões.", "Gosto de trabalhar em ambientes dinâmicos.", "Sou paciente com processos burocráticos.", "Prefiro trabalhar com planejamento estruturado."], p: ["D", "I", "S", "C"] },
+        { o: ["Defendo minhas ideias com convicção.", "Sou espontâneo ao me comunicar.", "Prefiro ambientes harmoniosos.", "Verifico normas antes de executar tarefas."], p: ["D", "I", "S", "C"] },
+        { o: ["Reajo rapidamente a mudanças.", "Gosto de inspirar pessoas.", "Sou constante no desempenho.", "Gosto de controle e organização."], p: ["D", "I", "S", "C"] },
+        { o: ["Assumo riscos calculados.", "Sou expressivo nas reuniões.", "Sou paciente em decisões coletivas.", "Analiso minuciosamente relatórios."], p: ["D", "I", "S", "C"] },
+        { o: ["Foco em metas e prazos.", "Gosto de persuadir positivamente.", "Sou colaborativo.", "Sou disciplinado com normas."], p: ["D", "I", "S", "C"] },
+        { o: ["Gosto de desafios complexos.", "Sou entusiasmado ao apresentar ideias.", "Sou estável e previsível.", "Gosto de ambientes organizados."], p: ["D", "I", "S", "C"] },
+        { o: ["Tomo decisões com firmeza.", "Tenho facilidade para networking.", "Sou tranquilo sob pressão.", "Prezo pela exatidão."], p: ["D", "I", "S", "C"] },
+        { o: ["Busco eficiência acima de tudo.", "Sou comunicativo com diferentes públicos.", "Evito conflitos desnecessários.", "Trabalho bem com regulamentos técnicos."], p: ["D", "I", "S", "C"] },
+        { o: ["Gosto de liderar projetos.", "Sou persuasivo em reuniões.", "Sou paciente com colegas.", "Sou atento a normas legais."], p: ["D", "I", "S", "C"] },
+        { o: ["Sou competitivo e orientado a resultados.", "Sou motivador natural.", "Gosto de previsibilidade.", "Sou detalhista em análises."], p: ["D", "I", "S", "C"] },
+        { o: ["Prefiro agir do que esperar.", "Sou falante e comunicativo.", "Sou constante no apoio à equipe.", "Sou criterioso nas decisões técnicas."], p: ["D", "I", "S", "C"] },
+        { o: ["Gosto de resolver conflitos rapidamente.", "Crio ambientes descontraídos.", "Sou estável em mudanças graduais.", "Sigo procedimentos corretamente."], p: ["D", "I", "S", "C"] },
+        { o: ["Sou objetivo nas decisões.", "Gosto de ser reconhecido.", "Sou leal à equipe.", "Sou preciso nas informações."], p: ["D", "I", "S", "C"] },
+        { o: ["Busco desafios estratégicos.", "Sou expansivo socialmente.", "Sou paciente em processos longos.", "Gosto de trabalhar com normas claras."], p: ["D", "I", "S", "C"] },
+        { o: ["Enfrento situações difíceis sem hesitar.", "Tenho facilidade de comunicação.", "Sou equilibrado e constante.", "Valorizo qualidade técnica."], p: ["D", "I", "S", "C"] },
+        { o: ["Sou determinado e persistente.", "Transmito entusiasmo.", "Sou compreensivo com a equipe.", "Sou sistemático nas tarefas."], p: ["D", "I", "S", "C"] },
+        { o: ["Gosto de ter controle sobre decisões importantes.", "Sou carismático.", "Sou estável emocionalmente.", "Analiso riscos com cuidado."], p: ["D", "I", "S", "C"] },
+        { o: ["Busco resultados mensuráveis.", "Gosto de interações frequentes.", "Sou cooperativo.", "Trabalho com foco em padrões técnicos."], p: ["D", "I", "S", "C"] },
+        { o: ["Sou assertivo nas decisões.", "Sou animado em apresentações.", "Sou constante e previsível.", "Sou rigoroso com prazos e normas."], p: ["D", "I", "S", "C"] },
+        { o: ["Gosto de assumir responsabilidade por resultados.", "Sou comunicativo e influente.", "Sou paciente e resiliente.", "Sou analítico e detalhista."], p: ["D", "I", "S", "C"] }
+    ];
+
+        // -------------------------
+        // ESTADO GLOBAL
+        // -------------------------
+        let currentIdx = 0;
+        let respostasUsuario = [];
+        let myChart = null;
+        let historyChart = null;
+        let resultadoGlobal = null;
+
+        // -------------------------
+        // NAVEGAÇÃO
+        // -------------------------
+        function showSection(id) {
+            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if(id === 'dashboard') loadDashboard();
+        }
+
+        function startTest() {
+            currentIdx = 0;
+            respostasUsuario = Array(perguntas.length).fill(null);
+            showSection('teste');
+            renderQuestion();
+        }
+
+        // -------------------------
+        // LÓGICA DO TESTE
+        // -------------------------
+        function renderQuestion() {
+            const q = perguntas[currentIdx];
+            document.getElementById('current-q-num').innerText = currentIdx + 1;
+            document.getElementById('progress-bar').style.width = `${((currentIdx + 1) / 32) * 100}%`;
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            
+            q.o.forEach((option, i) => {
+                const letter = q.p[i];
+                const isSelected = respostasUsuario[currentIdx] === letter;
+                
+                const btn = document.createElement('div');
+                btn.className = `p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 flex items-center justify-between hover:border-pantone-blue ${isSelected ? 'border-pantone-blue bg-blue-50' : 'border-slate-100'}`;
+                btn.onclick = () => selectOption(letter);
+                btn.innerHTML = `
+                    <span class="font-medium text-slate-700">${option}</span>
+                    <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-pantone-blue bg-pantone-blue' : 'border-slate-200'}">
+                        ${isSelected ? '<i class="fas fa-check text-white text-xs"></i>' : ''}
+                    </div>
+                `;
+                container.appendChild(btn);
+            });
+
+            document.getElementById('btn-voltar').classList.toggle('hidden', currentIdx === 0);
+            document.getElementById('btn-proximo').disabled = !respostasUsuario[currentIdx];
+            document.getElementById('btn-proximo').classList.toggle('opacity-50', !respostasUsuario[currentIdx]);
+            document.getElementById('btn-proximo').classList.toggle('cursor-not-allowed', !respostasUsuario[currentIdx]);
+            document.getElementById('btn-proximo').innerText = currentIdx === 39 ? 'FINALIZAR' : 'AVANÇAR';
+        }
+
+        function selectOption(letter) {
+            respostasUsuario[currentIdx] = letter;
+            renderQuestion();
+        }
+
+        function nextQuestion() {
+            if (currentIdx < 39) {
+                currentIdx++;
+                renderQuestion();
+            } else {
+                processarResultado();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) {
+                currentIdx--;
+                renderQuestion();
+            }
+        }
+
+        // -------------------------
+        // CÁLCULO E RESULTADO
+        // -------------------------
+        function processarResultado() {
+            const totais = { D: 0, I: 0, S: 0, C: 0 };
+            respostasUsuario.forEach(res => totais[res]++);
+            
+            const total = perguntas.length;
+            const porcentagens = {
+                D: parseFloat(((totais.D / total) * 100).toFixed(1)),
+                I: parseFloat(((totais.I / total) * 100).toFixed(1)),
+                S: parseFloat(((totais.S / total) * 100).toFixed(1)),
+                C: parseFloat(((totais.C / total) * 100).toFixed(1))
+            };
+
+            // Definir Perfil Dominante
+            let maxVal = -1;
+            let dominante = '';
+            for (let k in porcentagens) {
+                if (porcentagens[k] > maxVal) {
+                    maxVal = porcentagens[k];
+                    dominante = k;
+                }
+            }
+
+            const nomes = { D: 'Dominante', I: 'Influente', S: 'Estabilidade', C: 'Conformidade' };
+            resultadoGlobal = {
+                data: new Date().toLocaleDateString('pt-BR'),
+                timestamp: Date.now(),
+                dominante: nomes[dominante],
+                pontuacoes: porcentagens
+            };
+
+            exibirResultado(resultadoGlobal);
+        }
+
+        function exibirResultado(data) {
+            showSection('resultado');
+            
+            document.getElementById('res-perfil-nome').innerText = data.dominante;
+            const cores = { Dominante: 'text-red-600', Influente: 'text-yellow-500', Estabilidade: 'text-green-600', Conformidade: 'text-blue-600' };
+            document.getElementById('res-perfil-nome').className = `text-5xl font-black mb-6 uppercase tracking-tight ${cores[data.dominante]}`;
+
+            // Lista de porcentagens
+            const list = document.getElementById('res-porcentagens-lista');
+            list.innerHTML = '';
+            const labels = { D: 'Dominância (D)', I: 'Influência (I)', S: 'Estabilidade (S)', C: 'Conformidade (C)' };
+            const barColors = { D: 'bg-red-500', I: 'bg-yellow-400', S: 'bg-green-500', C: 'bg-blue-500' };
+            
+            Object.entries(data.pontuacoes).forEach(([k, v]) => {
+                list.innerHTML += `
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs font-bold uppercase text-slate-500">
+                            <span>${labels[k]}</span>
+                            <span>${v}%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden">
+                            <div class="${barColors[k]} h-full" style="width: ${v}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Gráfico Chart.js
+            if (myChart) myChart.destroy();
+            const ctx = document.getElementById('resultChart').getContext('2d');
+            myChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['D', 'I', 'S', 'C'],
+                    datasets: [{
+                        label: 'Seu Perfil',
+                        data: [data.pontuacoes.D, data.pontuacoes.I, data.pontuacoes.S, data.pontuacoes.C],
+                        backgroundColor: 'rgba(0, 51, 160, 0.2)',
+                        borderColor: '#0033A0',
+                        pointBackgroundColor: '#0033A0',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { display: true },
+                            suggestedMin: 0,
+                            suggestedMax: 50
+                        }
+                    }
+                }
+            });
+
+            // Dicas de Perfil
+            const dicas = {
+                Dominante: ["Foque em ouvir mais seus liderados.", "Lembre-se que o processo é tão importante quanto o resultado.", "Tente ser menos impaciente com quem tem ritmos diferentes."],
+                Influente: ["Foque mais na execução prática e menos na conversa.", "Organize suas tarefas para não se perder em reuniões sociais.", "Dê mais atenção aos detalhes técnicos dos projetos."],
+                Estabilidade: ["Não tenha medo de mudanças; elas trazem crescimento.", "Tente expressar sua opinião com mais firmeza.", "Saia da zona de conforto e aceite novos desafios rápidos."],
+                Conformidade: ["Não busque o perfeccionismo absoluto em tudo; 'feito é melhor que perfeito'.", "Melhore sua comunicação interpessoal.", "Tente ser mais flexível com as regras em situações excepcionais."]
+            };
+
+            const desenvolvimento = {
+                Dominante: ["Desenvolver inteligência emocional e empatia.", "Treinar a escuta ativa.", "Aprender a delegar delegando autonomia, não apenas tarefas."],
+                Influente: ["Criar rotinas de planejamento rígidas.", "Estudar análise de dados.", "Praticar o foco em uma única tarefa por vez."],
+                Estabilidade: ["Treinar oratória e posicionamento.", "Estudar metodologias ágeis.", "Tomar decisões de forma mais autônoma."],
+                Conformidade: ["Praticar o trabalho em equipe sem microgerenciamento.", "Desenvolver criatividade lateral.", "Aceitar riscos calculados."]
+            };
+
+            document.getElementById('dicas-dominante').innerHTML = (dicas[data.dominante] || []).map(d => `<p>• ${d}</p>`).join('');
+            document.getElementById('dicas-desenvolvimento').innerHTML = (desenvolvimento[data.dominante] || []).map(d => `<p>• ${d}</p>`).join('');
+        }
+
+        // -------------------------
+        // PERSISTÊNCIA E DASHBOARD
+        // -------------------------
+        function concluirTeste() {
+            let historico = JSON.parse(localStorage.getItem('disc_history') || '[]');
+            historico.push(resultadoGlobal);
+            localStorage.setItem('disc_history', JSON.stringify(historico));
+
+            const modal = document.createElement('div');
+            modal.className = "fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[100] p-4";
+            modal.innerHTML = `
+                <div class="bg-white rounded-2xl p-8 text-center max-w-sm">
+                    <i class="fas fa-check-circle text-6xl text-green-500 mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-2">Parabéns!</h3>
+                    <p class="text-slate-600">Obrigado por sua participação! Seu resultado foi salvo no histórico.</p>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            setTimeout(() => {
+                modal.remove();
+                showSection('home');
+            }, 3000);
+        }
+
+        function loadDashboard() {
+            const historico = JSON.parse(localStorage.getItem('disc_history') || '[]');
+            const table = document.getElementById('dash-table');
+            const list = document.getElementById('history-list');
+            const charts = document.getElementById('dash-charts');
+            const empty = document.getElementById('dash-empty');
+
+            if (historico.length === 0) {
+                table.classList.add('hidden');
+                charts.classList.add('hidden');
+                empty.classList.remove('hidden');
+                return;
+            }
+
+            empty.classList.add('hidden');
+            table.classList.remove('hidden');
+            charts.classList.remove('hidden');
+            
+            list.innerHTML = '';
+            historico.reverse().forEach((item, idx) => {
+                list.innerHTML += `
+                    <tr class="border-b hover:bg-slate-50">
+                        <td class="p-4 text-sm">${item.data}</td>
+                        <td class="p-4 text-sm font-bold text-pantone-blue">${item.dominante}</td>
+                        <td class="p-4 text-xs font-mono text-slate-500">D:${item.pontuacoes.D} | I:${item.pontuacoes.I} | S:${item.pontuacoes.S} | C:${item.pontuacoes.C}</td>
+                        <td class="p-4">
+                            <button onclick="reverResultado(${historico.length - 1 - idx})" class="text-blue-600 hover:underline text-xs font-bold">REVER</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            // Gráfico de linha do histórico
+            if(historyChart) historyChart.destroy();
+            const last5 = historico.slice(-5);
+            const ctxHist = document.getElementById('historyChart').getContext('2d');
+            historyChart = new Chart(ctxHist, {
+                type: 'line',
+                data: {
+                    labels: last5.map(h => h.data),
+                    datasets: [
+                        { label: 'D', data: last5.map(h => h.pontuacoes.D), borderColor: '#ef4444', fill: false },
+                        { label: 'I', data: last5.map(h => h.pontuacoes.I), borderColor: '#fbbf24', fill: false },
+                        { label: 'S', data: last5.map(h => h.pontuacoes.S), borderColor: '#22c55e', fill: false },
+                        { label: 'C', data: last5.map(h => h.pontuacoes.C), borderColor: '#3b82f6', fill: false }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        function reverResultado(idx) {
+            const historico = JSON.parse(localStorage.getItem('disc_history') || '[]');
+            resultadoGlobal = historico[idx];
+            exibirResultado(resultadoGlobal);
+        }
+
+        // -------------------------
+        // EXPORTAÇÃO PDF
+        // -------------------------
+        async function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(22);
+            doc.setTextColor(0, 51, 160);
+            doc.text("Relatório de Perfil DISC", 105, 20, null, "center");
+            
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Data: ${resultadoGlobal.data}`, 20, 40);
+            doc.text(`Perfil Dominante: ${resultadoGlobal.dominante}`, 20, 50);
+            
+            doc.setFontSize(16);
+            doc.text("Pontuações:", 20, 70);
+            doc.setFontSize(12);
+            doc.text(`- Dominância (D): ${resultadoGlobal.pontuacoes.D}%`, 30, 80);
+            doc.text(`- Influência (I): ${resultadoGlobal.pontuacoes.I}%`, 30, 90);
+            doc.text(`- Estabilidade (S): ${resultadoGlobal.pontuacoes.S}%`, 30, 100);
+            doc.text(`- Conformidade (C): ${resultadoGlobal.pontuacoes.C}%`, 30, 110);
+
+            doc.setFontSize(16);
+            doc.text("Dica Principal:", 20, 130);
+            doc.setFontSize(11);
+            const dicas = document.getElementById('dicas-dominante').innerText;
+            const splitDicas = doc.splitTextToSize(dicas, 170);
+            doc.text(splitDicas, 20, 140);
+
+            doc.save(`Resultado_DISC_${resultadoGlobal.dominante}.pdf`);
+        }
+
+        // Feedback stars
+        document.querySelectorAll('.star-rating').forEach(star => {
+            star.onclick = function() {
+                const val = this.dataset.v;
+                document.querySelectorAll('.star-rating').forEach(s => {
+                    s.classList.toggle('active', s.dataset.v <= val);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
