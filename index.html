@@ -610,35 +610,55 @@
         // -------------------------
         // EXPORTAÇÃO PDF
         // -------------------------
-        async function downloadPDF() {
+        // - campo a ser SUBSTITUIDO para noso script dowload PDS 
+        // async function downloadPDF() {
+        // const { jsPDF } = window.jspdf;
+        // const doc = new jsPDF();
+            
+        //  doc.setFontSize(22);
+        //  doc.setTextColor(0, 51, 160);
+        //    doc.text("Relatório de Perfil DISC", 105, 20, null, "center");
+            
+        //    doc.setFontSize(14);
+        //    doc.setTextColor(0, 0, 0);
+        //    doc.text(`Data: ${resultadoGlobal.data}`, 20, 40);
+        //    doc.text(`Perfil Dominante: ${resultadoGlobal.dominante}`, 20, 50);
+            
+        //    doc.setFontSize(16);
+        //    doc.text("Pontuações:", 20, 70);
+        //    doc.setFontSize(12);
+        //    doc.text(`- Dominância (D): ${resultadoGlobal.pontuacoes.D}%`, 30, 80);
+        //    doc.text(`- Influência (I): ${resultadoGlobal.pontuacoes.I}%`, 30, 90);
+        //    doc.text(`- Estabilidade (S): ${resultadoGlobal.pontuacoes.S}%`, 30, 100);
+        //    doc.text(`- Conformidade (C): ${resultadoGlobal.pontuacoes.C}%`, 30, 110);
+
+        //    doc.setFontSize(16);
+        //    doc.text("Dica Principal:", 20, 130);
+        //    doc.setFontSize(11);
+        //    const dicas = document.getElementById('dicas-dominante').innerText;
+        //    const splitDicas = doc.splitTextToSize(dicas, 170);
+        //    doc.text(splitDicas, 20, 140);
+
+        //    doc.save(`Resultado_DISC_${resultadoGlobal.dominante}.pdf`);
+        // --- fim do campo a ser substituido
+
+        // novo código para downloadPDF
+        function downloadPDF() {
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+            const element = document.getElementById('capture-area');
             
-            doc.setFontSize(22);
-            doc.setTextColor(0, 51, 160);
-            doc.text("Relatório de Perfil DISC", 105, 20, null, "center");
-            
-            doc.setFontSize(14);
-            doc.setTextColor(0, 0, 0);
-            doc.text(`Data: ${resultadoGlobal.data}`, 20, 40);
-            doc.text(`Perfil Dominante: ${resultadoGlobal.dominante}`, 20, 50);
-            
-            doc.setFontSize(16);
-            doc.text("Pontuações:", 20, 70);
-            doc.setFontSize(12);
-            doc.text(`- Dominância (D): ${resultadoGlobal.pontuacoes.D}%`, 30, 80);
-            doc.text(`- Influência (I): ${resultadoGlobal.pontuacoes.I}%`, 30, 90);
-            doc.text(`- Estabilidade (S): ${resultadoGlobal.pontuacoes.S}%`, 30, 100);
-            doc.text(`- Conformidade (C): ${resultadoGlobal.pontuacoes.C}%`, 30, 110);
-
-            doc.setFontSize(16);
-            doc.text("Dica Principal:", 20, 130);
-            doc.setFontSize(11);
-            const dicas = document.getElementById('dicas-dominante').innerText;
-            const splitDicas = doc.splitTextToSize(dicas, 170);
-            doc.text(splitDicas, 20, 140);
-
-            doc.save(`Resultado_DISC_${resultadoGlobal.dominante}.pdf`);
+            html2canvas(element).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgProps= pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                
+                pdf.text("Relatório de Perfil DISC - Mogi das Cruzes", 10, 10);
+                pdf.addImage(imgData, 'PNG', 0, 20, pdfWidth, pdfHeight);
+                pdf.save("Resultado-DISC.pdf");
+            });
+        // - fim do novo código donsloadPDF
         }
 
         // Feedback stars
@@ -653,5 +673,6 @@
     </script>
 </body>
 </html>
+
 
 
